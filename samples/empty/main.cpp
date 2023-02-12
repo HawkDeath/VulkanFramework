@@ -1,20 +1,15 @@
-#include <spdlog/spdlog.h>
-#include <GLFW/glfw3.h>
-#include <vulkan/vulkan.h>
+#include "../../Framework/Window/Window.h" // TODO: Fix this; Framework must share header files
+#include "../../Framework/Utils/Log.h" // TODO: same like above
 
+#include <vulkan/vulkan.h>
 #include <glm/glm.hpp>
 
+#include <memory>
 #include <vector>
-
 
 int main()
 {
-  glfwSetErrorCallback([](int code, const char* desc) -> void {
-    spdlog::error("[GLFW] {}: {}", code, desc);
-    });
-  glfwInit();
-  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  GLFWwindow* window = glfwCreateWindow(1280, 720, "Empty", nullptr, nullptr);
+  std::unique_ptr<hawkdeath::Window> window = std::make_unique<hawkdeath::Window>("Empty", 1280, 720);
 
   uint32_t properticesCount = { 0 };
   vkEnumerateInstanceLayerProperties(&properticesCount, nullptr);
@@ -24,23 +19,17 @@ int main()
   glm::vec4 vec = { 1.0f, 0.0f, 1.0f, 1.0f };
   auto res = glm::mat4(1.0f) * vec;
 
-  spdlog::info("Is available of {} layers", properticesCount);
+   LOG("Is available of {} layers", properticesCount);
   for (auto layer : props)
   {
-    spdlog::info("\t{}: {}.{}.{}", layer.layerName, VK_VERSION_MAJOR(layer.specVersion), VK_VERSION_MINOR(layer.specVersion), VK_VERSION_PATCH(layer.specVersion));
+    LOG("\t{}: {}.{}.{}", layer.layerName, VK_VERSION_MAJOR(layer.specVersion), VK_VERSION_MINOR(layer.specVersion), VK_VERSION_PATCH(layer.specVersion));
   }
 
-  while (!glfwWindowShouldClose(window))
+  while (!window->isClose())
   {
     glfwPollEvents();
   }
 
-  if (window)
-  {
-    glfwDestroyWindow(window);
-  }
-
-  glfwTerminate();
 
   return 0;
 }

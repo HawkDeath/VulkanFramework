@@ -42,5 +42,8 @@ endif()
 # spdlog
 add_subdirectory(libs/spdlog)
 
+# VMA
+add_subdirectory(libs/VulkanmemoryAllocator)
+
 add_subdirectory(Framework)
 add_subdirectory(samples)
